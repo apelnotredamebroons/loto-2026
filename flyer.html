@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>APEL – Loto de Noël – Flyer</title>
+    <style>
+        /* Polices servies depuis le dépôt (et non par Google) : aucune connexion
+           à un tiers à l'ouverture de la page. Licence : fonts/OFL.txt */
+        @font-face {
+            font-family: 'Lilita One';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url('fonts/lilita-one-latin.woff2') format('woff2');
+        }
+
+        /* Nunito est une police variable : un seul fichier couvre les graisses 600 à 900 */
+        @font-face {
+            font-family: 'Nunito';
+            font-style: normal;
+            font-weight: 600 900;
+            font-display: swap;
+            src: url('fonts/nunito-latin.woff2') format('woff2');
+        }
+
+        /* ──────────────────────────────────────────────────────────────
+           PALETTE NOËL (rouge, vert sapin, or)
+           ────────────────────────────────────────────────────────────── */
+        :root {
+            --rouge: #B3172B;
+            --rouge-dark: #7E0E1C;
+            --vert: #14532D;
+            --vert-clair: #E7F2EA;
+            --or: #E3B23C;
+            --or-dark: #A87C12;
+            --texte: #1F1A17;
+            --texte-doux: #5E5550;
+            --fond-page: #EFE7DA;
+            --fond-flyer: #FFFBF3;
+            --titre-font: 'Lilita One', 'Arial Black', Impact, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--fond-page);
+            font-family: 'Nunito', 'Segoe UI', Tahoma, Arial, sans-serif;
+            color: var(--texte);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 20px 60px;
+        }
+
+        /* ── BARRE DE CONTRÔLE (masquée à l'impression) ────────────── */
+        .controls {
+            background: #fff;
+            padding: 12px 22px;
+            border-radius: 12px;
+            border: 2px solid var(--rouge);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .controls h2 {
+            font-size: 15px;
+            color: var(--rouge-dark);
+        }
+
+        .controls button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background: var(--or);
+            color: var(--texte);
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .controls button:hover {
+            background: var(--or-dark);
+            color: #fff;
+        }
+
+        /* ──────────────────────────────────────────────────────────────
+           FEUILLE A4 PAYSAGE = 2 FLYERS A5 PORTRAIT CÔTE À CÔTE
+           ────────────────────────────────────────────────────────────── */
+        .sheet {
+            width: 297mm;
+            height: 210mm;
+            display: flex;
+            background: #fff;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+        }
+
+        .flyer {
+            position: relative;
+            overflow: hidden;
+            width: 148.5mm;
+            height: 210mm;
+            display: flex;
+            flex-direction: column;
+            background: var(--fond-flyer);
+            font-size: 10pt;
+            line-height: 1.3;
+        }
+
+        /* Mode A5 : une seule feuille A5 portrait, un seul flyer */
+        body.a5 .sheet {
+            width: 148.5mm;
+        }
+
+        body.a5 .flyer+.flyer {
+            display: none;
+        }
+
+        /* Ligne de découpe entre les deux flyers */
+        .flyer+.flyer {
+            border-left: 1px dashed #999;
+        }
+
+        /* ── BANDEAU TITRE ─────────────────────────────────────────── */
+        .hero {
+            position: relative;
+            background: radial-gradient(circle at 50% 0%, #D42A3F 0%, var(--rouge) 45%, var(--rouge-dark) 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4mm;
+            padding: 6mm 8mm 6mm 9mm;
+        }
+
+        .hero-titre {
+            position: relative;
+            text-align: center;
+        }
+
+        /* Les flocons sont décoratifs : on les garde discrets */
+        .snow {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.35);
+            font-size: 14pt;
+            line-height: 1;
+        }
+
+        .hero-label {
+            display: inline-block;
+            background: var(--or);
+            color: var(--rouge-dark);
+            font-weight: 900;
+            font-size: 8.5pt;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 0.8mm 4mm;
+            border-radius: 10mm;
+        }
+
+        .title {
+            font-family: var(--titre-font);
+            font-weight: 400;
+            line-height: 0.9;
+            margin-top: 2mm;
+            text-shadow: 0 1.2mm 0 var(--rouge-dark);
+        }
+
+        .title .loto {
+            display: block;
+            font-size: 62pt;
+            letter-spacing: 1px;
+        }
+
+        .title .ville {
+            display: block;
+            font-size: 22pt;
+            color: var(--or);
+        }
+
+        /* Carton de loto de salle : 3 lignes × 9 colonnes, 5 numéros par ligne */
+        .carton {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(9, 8.2mm);
+            grid-auto-rows: 8.2mm;
+            background: #fff;
+            border: 0.7mm solid var(--texte);
+            box-shadow: 0 1.2mm 2.5mm rgba(0, 0, 0, 0.4);
+            transform: rotate(-4deg);
+        }
+
+        .carton span {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid #9C948C;
+            border-bottom: 1px solid #9C948C;
+            color: var(--texte);
+            font-weight: 900;
+            font-size: 12pt;
+        }
+
+        .carton span.vide {
+            background: #F3D98F;
+        }
+
+        /* Pion transparent posé sur un numéro : on voit le numéro à travers */
+        .carton span.pion::after {
+            content: '';
+            position: absolute;
+            inset: 0.6mm;
+            border-radius: 50%;
+            background: var(--pion-color);
+            opacity: 0.6;
+            box-shadow: inset 0 -0.5mm 0 rgba(0, 0, 0, 0.25);
+        }
+
+        /* ── DATE ──────────────────────────────────────────────────── */
+        .date-band {
+            background: var(--vert);
+            color: #fff;
+            text-align: center;
+            padding: 2.6mm 6mm;
+            border-top: 1.2mm solid var(--or);
+            border-bottom: 1.2mm solid var(--or);
+        }
+
+        .date-band .date {
+            font-family: var(--titre-font);
+            font-size: 19pt;
+            line-height: 1.05;
+        }
+
+        .date-band .lieu {
+            font-weight: 800;
+            font-size: 10.5pt;
+        }
+
+        .date-band .lieu strong {
+            color: var(--or);
+        }
+
+        /* ── CONTENU ───────────────────────────────────────────────── */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3mm;
+            padding: 3.5mm 7mm 0;
+        }
+
+        .columns {
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            gap: 3.5mm;
+        }
+
+        .box {
+            border: 0.6mm solid var(--vert);
+            border-radius: 3mm;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .box h3 {
+            background: var(--vert);
+            color: #fff;
+            font-family: var(--titre-font);
+            font-weight: 400;
+            font-size: 12.5pt;
+            letter-spacing: 0.5px;
+            text-align: center;
+            padding: 1mm 2mm 0.6mm;
+        }
+
+        .box.lots {
+            border-color: var(--rouge);
+        }
+
+        .box.lots h3 {
+            background: var(--rouge);
+        }
+
+        .box ul {
+            list-style: none;
+            padding: 1.5mm 3mm;
+        }
+
+        .box li {
+            display: flex;
+            align-items: baseline;
+            gap: 1.5mm;
+            padding: 0.55mm 0;
+            border-bottom: 1px dotted #D8CFC2;
+        }
+
+        .box li:last-child {
+            border-bottom: none;
+        }
+
+        .lots .qte {
+            font-weight: 900;
+            color: var(--rouge);
+            min-width: 6mm;
+            text-align: right;
+        }
+
+        .lots .libelle {
+            flex: 1;
+            font-size: 9pt;
+        }
+
+        .montant {
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .total {
+            background: var(--or);
+            text-align: center;
+            font-weight: 900;
+            font-size: 9pt;
+            padding: 1.2mm 2mm;
+            text-transform: uppercase;
+        }
+
+        .total strong {
+            font-family: var(--titre-font);
+            font-weight: 400;
+            font-size: 15pt;
+            color: var(--rouge-dark);
+            letter-spacing: 0.5px;
+        }
+
+        .tarifs li {
+            justify-content: space-between;
+        }
+
+        .tarifs .offert {
+            display: block;
+            font-size: 7.5pt;
+            font-weight: 800;
+            color: var(--rouge);
+        }
+
+        .ouverture {
+            margin-top: 2.5mm;
+            text-align: center;
+            background: var(--rouge);
+            color: #fff;
+            border-radius: 3mm;
+            padding: 1.6mm;
+            font-weight: 900;
+            font-size: 10.5pt;
+        }
+
+        .ouverture strong {
+            font-family: var(--titre-font);
+            font-weight: 400;
+            font-size: 14pt;
+            color: var(--or);
+        }
+
+        /* Accroche Noël */
+        .slogan {
+            text-align: center;
+            font-family: var(--titre-font);
+            font-size: 15pt;
+            color: var(--rouge);
+            line-height: 1.1;
+        }
+
+        .slogan small {
+            display: block;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 9pt;
+            color: var(--vert);
+        }
+
+        /* Restauration et réservations */
+        .info-row {
+            display: flex;
+            gap: 2.5mm;
+            align-items: flex-start;
+            background: var(--vert-clair);
+            border-radius: 3mm;
+            padding: 2mm 3mm;
+        }
+
+        .info-row .icone {
+            font-size: 15pt;
+            line-height: 1;
+        }
+
+        .info-row strong {
+            color: var(--vert);
+        }
+
+        .tel {
+            font-family: var(--titre-font);
+            font-weight: 400;
+            font-size: 15pt;
+            color: var(--rouge);
+            letter-spacing: 0.5px;
+        }
+
+        /* ── PIED DE PAGE ──────────────────────────────────────────── */
+        .footer {
+            display: flex;
+            align-items: center;
+            gap: 3mm;
+            margin: auto 7mm 0;
+            padding: 2.5mm 0 4mm;
+            border-top: 0.6mm solid var(--or);
+            font-size: 8.5pt;
+            line-height: 1.35;
+        }
+
+        .footer img {
+            width: 17mm;
+            height: auto;
+        }
+
+        /* ──────────────────────────────────────────────────────────────
+           IMPRESSION : sans marges (format @page défini dans #page-style)
+           ────────────────────────────────────────────────────────────── */
+        @media print {
+
+            *,
+            *::before,
+            *::after {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            body {
+                background: #fff;
+                padding: 0;
+                display: block;
+            }
+
+            .controls {
+                display: none;
+            }
+
+            .sheet {
+                box-shadow: none;
+                overflow: hidden;
+            }
+        }
+    </style>
+    <!-- Format de page, modifié par printFormat() : A4 paysage ou A5 portrait -->
+    <style id="page-style">
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="controls">
+        <h2>🎄🎱 Flyer – Loto de Noël (2 par page A4)</h2>
+        <button type="button" onclick="printFormat('a4')">🖨️ Imprimer</button>
+    </div>
+
+    <div class="controls">
+        <h2>🎄🎱 Flyer – Loto de Noël A5</h2>
+        <button type="button" onclick="printFormat('a5')">🖨️ Imprimer</button>
+    </div>
+
+    <div class="sheet" id="sheet"></div>
+
+    <!-- ─────────── TEMPLATE D'UN FLYER A5 ─────────── -->
+    <template id="flyer-template">
+        <div class="flyer">
+
+            <div class="hero">
+                <span class="snow" style="top: 4mm; left: 6mm;">❄</span>
+                <span class="snow" style="top: 17mm; left: 15mm; font-size: 9pt;">❄</span>
+                <span class="snow" style="top: 30mm; left: 7mm; font-size: 11pt;">❅</span>
+                <span class="snow" style="top: 5mm; right: 8mm; font-size: 11pt;">❅</span>
+                <span class="snow" style="top: 20mm; right: 14mm;">❄</span>
+                <span class="snow" style="top: 33mm; right: 6mm; font-size: 9pt;">❄</span>
+
+                <div class="hero-titre">
+                    <span class="hero-label">🎄 Spécial Noël 🎄</span>
+                    <h1 class="title">
+                        <span class="loto">LOTO</span>
+                        <span class="ville">Broons</span>
+                    </h1>
+                </div>
+                <div class="carton"></div>
+            </div>
+
+            <div class="date-band">
+                <p class="date">Samedi 5 décembre 2026 – 20h00</p>
+                <p class="lieu">Salle des Fêtes de Broons · Animé par <strong>JCO ANIMATION</strong></p>
+            </div>
+
+            <div class="content">
+                <div class="columns">
+                    <div class="box lots">
+                        <h3>🎁 À gagner</h3>
+                        <ul>
+                            <li><span class="qte">1</span><span class="libelle">bon d’achat de</span><span
+                                    class="montant">600 €</span></li>
+                            <li><span class="qte">1</span><span class="libelle">bon d’achat de</span><span
+                                    class="montant">300 €</span></li>
+                            <li><span class="qte">1</span><span class="libelle">bon d’achat de</span><span
+                                    class="montant">200 €</span></li>
+                            <li><span class="qte">6</span><span class="libelle">bons d’achat de</span><span
+                                    class="montant">100 €</span></li>
+                            <li><span class="qte">11</span><span class="libelle">bons d’achat de</span><span
+                                    class="montant">50 €</span></li>
+                            <li><span class="qte">11</span><span class="libelle">bons d’achat de</span><span
+                                    class="montant">40 €</span></li>
+                            <li><span class="qte">11</span><span class="libelle">bons d’achat de</span><span
+                                    class="montant">30 €</span></li>
+                        </ul>
+                        <p class="total"><strong>3 020 €</strong></p>
+                    </div>
+
+                    <div>
+                        <div class="box tarifs">
+                            <h3>🎟️ Tarifs</h3>
+                            <ul>
+                                <li><span>1 carte</span><span class="montant">3 €</span></li>
+                                <li><span>3 cartes</span><span class="montant">8 €</span></li>
+                                <li><span>Plaque de 6 <span class="offert">+1 offerte</span></span><span
+                                        class="montant">15 €</span></li>
+                                <li><span>Plaque de 8 <span class="offert">+1 offerte</span></span><span
+                                        class="montant">18 €</span></li>
+                                <li><span>Plaque de 10 <span class="offert">+2 offertes</span></span><span
+                                        class="montant">20 €</span></li>
+                            </ul>
+                        </div>
+                        <p class="ouverture">Ouverture <strong>18h30</strong></p>
+                    </div>
+                </div>
+
+                <p class="slogan">🎄 Gagnez vos cadeaux de Noël ! 🎄
+                    <small>Une soirée conviviale à partager en famille ou entre amis</small>
+                </p>
+
+                <div class="info-row">
+                    <span class="icone">🍴</span>
+                    <p><strong>Restauration sur place :</strong> buvette, galettes saucisses, sandwichs, crêpes,
+                        gâteaux</p>
+                </div>
+
+                <div class="info-row">
+                    <span class="icone">📞</span>
+                    <p><strong>Réservations conseillées</strong> (SMS de préférence)<br>
+                        <span class="tel">06 98 49 21 52</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="footer">
+                <img src="logo_apel.png" alt="Logo APEL" />
+                <p>Organisé par l’<strong>APEL du collège Notre-Dame</strong> &amp; de l’<strong>école
+                        Saint-Joseph</strong> de Broons.<br>Les bénéfices financent des projets pour les enfants. Merci
+                    !</p>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        /**
+         * Carton décoratif : 0 = case vide, numéros rangés par dizaine (colonne 1 = 1-9 … colonne 9 = 80-90).
+         * PIONS liste les numéros recouverts (ici la 2e ligne entière : un « quine »).
+         */
+        const CARTON = [
+            [4, 0, 23, 0, 41, 0, 62, 0, 85],
+            [0, 15, 0, 36, 47, 0, 0, 78, 90],
+            [9, 18, 0, 39, 0, 55, 67, 0, 0],
+        ];
+        const PIONS = [15, 36, 47, 78, 90, 23, 67];
+        const COULEURS_PIONS = ['#D42A3F', '#2E7D4F', '#2F6FD0', '#E08A12'];
+
+        /**
+         * Fill the decorative loto card with numbers and transparent tokens.
+         *
+         * FR : Remplit le carton décoratif avec ses numéros et ses pions transparents.
+         *
+         * @param {HTMLElement} carton Conteneur du carton à remplir.
+         */
+        function remplirCarton(carton) {
+            CARTON.flat().forEach((numero) => {
+                const cell = document.createElement('span');
+                if (!numero) {
+                    cell.className = 'vide';
+                    carton.appendChild(cell);
+                    return;
+                }
+                cell.textContent = numero;
+                const pionIndex = PIONS.indexOf(numero);
+                if (pionIndex >= 0) {
+                    cell.className = 'pion';
+                    cell.style.setProperty('--pion-color', COULEURS_PIONS[pionIndex % COULEURS_PIONS.length]);
+                }
+                carton.appendChild(cell);
+            });
+        }
+
+        // Duplique le flyer pour en avoir 2 sur la feuille A4.
+        const sheet = document.getElementById('sheet');
+        const template = document.getElementById('flyer-template');
+        remplirCarton(template.content.querySelector('.carton'));
+        for (let copyIndex = 0; copyIndex < 2; copyIndex++) {
+            sheet.appendChild(template.content.cloneNode(true));
+        }
+
+        // Bascule le format de page puis lance l'impression.
+        const pageStyle = document.getElementById('page-style');
+        const PAGE_SIZES = { a4: 'A4 landscape', a5: 'A5 portrait' };
+
+        function setFormat(format) {
+            document.body.classList.toggle('a5', format === 'a5');
+            pageStyle.textContent = `@page { size: ${PAGE_SIZES[format]}; margin: 0; }`;
+        }
+
+        function printFormat(format) {
+            setFormat(format);
+            window.print();
+        }
+
+        // Retour à l'affichage A4 après l'impression.
+        window.addEventListener('afterprint', () => setFormat('a4'));
+    </script>
+
+</body>
+
+</html>
